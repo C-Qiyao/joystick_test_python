@@ -1,10 +1,12 @@
 import sys
 import pygame
+import time
+import threading  # 导入threading包
 from io import BytesIO
 from Ui_gamepad import Ui_MainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow,QPushButton, QPlainTextEdit,QLabel,QMessageBox
-
+quit=0
 class myclass():
     def __init__(self) -> None:
         pass
@@ -12,10 +14,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def __init__(self):
         super(MainWindow,self).__init__()
         self.setupUi(self)
-        #在此输入connect链接
+        self.pushButton.clicked.connect(self.connectgamepad)#连接串口按钮
         self.show()
 
-        self.pushButton.clicked.connect(self.connectgamepad)#连接串口按钮
+
     def connectgamepad(self):
         pygame.init()
         pygame.joystick.init()
@@ -29,12 +31,30 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.message.insertPlainText("\n")
         if self.joystick_count==0:
             self.echo("请连接手柄")
-        self.xbox = pygame.joystick.Joystick(0)
-        self.xbox.init()
-        print (self.xbox.get_numaxes())
-        self.message.insertPlainText('检测到手柄轴:')
-        self.message.insertPlainText(str(self.xbox.get_numaxes()))
-        self.message.insertPlainText("\n")       
+        else:
+
+             self.xbox = pygame.joystick.Joystick(0)
+             self.xbox.init()
+             print (self.xbox.get_numaxes())
+             self.message.insertPlainText('检测到手名称:')   
+             self.message.insertPlainText(self.xbox.get_name() )      
+             self.message.insertPlainText("\n")      
+             self.message.insertPlainText('检测到手柄轴:')
+             self.message.insertPlainText(str(self.xbox.get_numaxes()))
+             self.message.insertPlainText("\n")  
+             time.sleep(1)
+             self.proData = threading.Thread(target=self.processData)#processdata设置单独线程
+             self.proData.setDaemon(True)#设置为后台线程，关闭一起关闭
+             self.proData.start()#线程启动
+    def processData(self):
+        while(quit==0):
+
+            x_axisdata=self.xbox.get_axis(5)
+            self.x_axis.setText(str(int(x_axisdata*100)))
+            print (x_axisdata)
+            time.sleep(0.1)
+
+                            
            
     def echo(self,info):
         '''显示对话框返回值'''
