@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>486</width>
-    <height>382</height>
+    <width>500</width>
+    <height>242</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,13 +17,20 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>100</x>
       <y>20</y>
       <width>151</width>
       <height>151</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>连接手柄</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QLineEdit" name="x_axis"/>
      </item>
@@ -38,8 +45,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>40</y>
+      <x>40</x>
+      <y>70</y>
       <width>54</width>
       <height>12</height>
      </rect>
@@ -48,13 +55,23 @@
      <string>X_axis</string>
     </property>
    </widget>
+   <widget class="QTextEdit" name="message">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>10</y>
+      <width>191</width>
+      <height>161</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>486</width>
+     <width>500</width>
      <height>22</height>
     </rect>
    </property>
