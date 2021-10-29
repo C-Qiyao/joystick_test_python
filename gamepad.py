@@ -15,13 +15,17 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         super(MainWindow,self).__init__()
         self.setupUi(self)
         self.pushButton.clicked.connect(self.connectgamepad)#连接串口按钮
+        pygame.init()
+        pygame.joystick.init()
+        self.done=False
+        self.proData = threading.Thread(target=self.processData)#processdata设置单独线程
+        self.proData.setDaemon(True)#设置为后台线程，关闭一起关闭
         self.show()
 
 
     def connectgamepad(self):
-        pygame.init()
-        pygame.joystick.init()
-        self.done=False
+
+        
         self.joystick_count = pygame.joystick.get_count()
         self.message.insertPlainText('获取手柄按键信息\n')
         
@@ -41,9 +45,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
              self.message.insertPlainText("\n")      
              self.message.insertPlainText('检测到手柄轴:')
              self.message.insertPlainText(str(self.xbox.get_numaxes()))
-             self.message.insertPlainText("\n")  
-             self.proData = threading.Thread(target=self.processData)#processdata设置单独线程
-             self.proData.setDaemon(True)#设置为后台线程，关闭一起关闭
+             self.message.insertPlainText("\n") 
              self.proData.start()#线程启动
     
     def processData(self):
@@ -51,10 +53,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
           for event in pygame.event.get(): # User did something
             if event.type == pygame.QUIT: # If user clicked close
                 self.done=True
-          x_axisdata=self.xbox.get_axis(5)
-          self.x_axis.setText(str(int(x_axisdata*100)))
-          print (x_axisdata)
+          self.x_axis.setText(str(int(self.xbox.get_axis(5)*100)))
           time.sleep(0.1)
+
 
                             
            
