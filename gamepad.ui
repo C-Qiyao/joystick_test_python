@@ -19,8 +19,8 @@
      <rect>
       <x>100</x>
       <y>20</y>
-      <width>151</width>
-      <height>151</height>
+      <width>171</width>
+      <height>231</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -39,6 +39,13 @@
      </item>
      <item>
       <widget class="QLineEdit" name="z_axis"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="disconnect">
+       <property name="text">
+        <string>断开连接</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
