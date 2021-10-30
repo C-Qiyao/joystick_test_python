@@ -130,7 +130,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                   if event.type == pygame.QUIT: # If user clicked close
                    self.done=True
                str1='th: '+str(int(self.xbox.get_axis(5)*100))+' br:  '+str(int(self.xbox.get_axis(4)*100))+'  x1:  '+str(int(self.xbox.get_axis(3)*100))+'  y1:  '+str(int(self.xbox.get_axis(2)*100))+'  x2:  '+str(int(self.xbox.get_axis(1)*100))+'  y2:  '+str(int(self.xbox.get_axis(0)*100))
-               print(str1)
+               '''print(str1)'''
                self.th=int(self.xbox.get_axis(5)*100)+100
                self.br=int(self.xbox.get_axis(4)*100)+100
                self.x1=int(self.xbox.get_axis(0)*100)
