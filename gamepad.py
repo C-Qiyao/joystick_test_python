@@ -57,11 +57,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 self.done=True
           '''self.x_axis.setText(str(int(self.xbox.get_axis(5)*100)))'''
           print('x:')
-          print(str(int(self.xbox.get_axis(5)*100)))
-          print('y:')
-          print(str(int(self.xbox.get_axis(4)*100)))
-          print('z:')
-          print(str(int(self.xbox.get_axis(3)*100)))
+          print('x5: '+str(int(self.xbox.get_axis(5)*100))+' x4:  '+str(int(self.xbox.get_axis(4)*100))+'  x3:  '+str(int(self.xbox.get_axis(3)*100))+'  x2:  '+str(int(self.xbox.get_axis(2)*100))+'  x1:  '+str(int(self.xbox.get_axis(1)*100)))
           '''self.y_axis.setText(str(int(self.xbox.get_axis(4)*100)))'''
           time.sleep(0.1)
 
