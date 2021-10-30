@@ -1,6 +1,8 @@
 import sys
 import pygame
 import time
+import serial
+import serial.tools.list_ports
 import threading  # 导入threading包
 from io import BytesIO
 from Ui_gamepad import Ui_MainWindow
@@ -15,10 +17,22 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         super(MainWindow,self).__init__()
         self.setupUi(self)
 
+        self.port_list = list(serial.tools.list_ports.comports())# 获取当前可用串口列表，serial模块函数
+        if len(self.port_list) == 0:# 判断串口列表是否为空
+            self.message.insertPlainText("未找到可用串口")# 弹出错误警告框，自建函数
+        else:
+            for i in range(0,len(self.port_list)):# 遍历可用串口列表
+                self.comboBox_SerialSel.addItem(self.port_list[i][0])# 将可用串口添加至comboBox（复选框）控件
+                # 串口参数设置
+        self.serial = serial.Serial(timeout=1)  # 实例化串口类
+        self.serial.baudrate = 38400  # 设置波特率（这里使用的是stc89c52）
+
+        self.pushButton_SerialCon.clicked.connect(self.connectSerial)#连接串口按钮
         self.pushButton.clicked.connect(self.connectgamepad)#连接串口按钮
         self.disconnect.clicked.connect(self.discon)
         self.pushButton_stop.clicked.connect(self.stop)
         self.pushButton_start.clicked.connect(self.startread)
+
 
         pygame.init()
         pygame.joystick.init()
@@ -33,6 +47,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
 
         self.xboxint=0
+        self.serial.is_open=0
 
     def connectgamepad(self):
 
@@ -71,9 +86,11 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                for event in pygame.event.get(): # User did something
                   if event.type == pygame.QUIT: # If user clicked close
                    self.done=True
-               print('x:')
-               print('x5: '+str(int(self.xbox.get_axis(5)*100))+' x4:  '+str(int(self.xbox.get_axis(4)*100))+'  x3:  '+str(int(self.xbox.get_axis(3)*100))+'  x2:  '+str(int(self.xbox.get_axis(2)*100))+'  x1:  '+str(int(self.xbox.get_axis(1)*100)))
-            time.sleep(0.1)
+               str1='x5: '+str(int(self.xbox.get_axis(5)*100))+' x4:  '+str(int(self.xbox.get_axis(4)*100))+'  x3:  '+str(int(self.xbox.get_axis(3)*100))+'  x2:  '+str(int(self.xbox.get_axis(2)*100))+'  x1:  '+str(int(self.xbox.get_axis(1)*100))
+               print(str1)
+               if self.serial.is_open :
+                    self.serial.write(bytes(str1+'\n',encoding='utf-8'))
+            time.sleep(0.05)
 
     def discon(self):
         self.done=True
@@ -110,6 +127,36 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             self.message.insertPlainText('请先连接手柄\n')
 
   
+    def connectSerial(self):
+        # 按键‘连接’响应
+        if self.pushButton_SerialCon.text()=='连接串口':# 判断当前按键文字是否为连接
+            self.serial.port = self.comboBox_SerialSel.currentText() # 获取复选框中的串口名字
+            try:#开启串口
+                self.serial.open()# 打开串口
+                if self.serial.is_open:# 判断串口是否打开
+                    self.pushButton_SerialCon.setText('关闭串口')# 将按键文字设置为断开\
+                    self.message.insertPlainText('串口打开成功')
+                    self.serial.is_open=1
+
+                else:
+                    self.message.insertPlainText('串口连接失败')
+            except Exception as err:
+                self.message.insertPlainText("串口连接失败,请选择未占用串口")
+        else:#关闭串口
+            try:
+                self.serial.write(b"Wait\r\n")# 向串口发送等待指令，用于停止单片机数据发送
+                self.enableRevData = False# 禁止串口接收数据
+                time.sleep(1)
+                self.serial.flushInput()# 清除串口缓存
+                self.serial.close()# 关闭串口
+                if not self.serial.is_open:# 判断串口关闭状态
+                    self.pushButton_SerialCon.setText('连接串口')
+                    self.message.insertPlainText('串口关闭成功')
+                    self.serial.is_open=0
+                else:
+                    self.message.insertPlainText('串口关闭失败')
+            except Exception as err:
+                self.message.insertPlainText("串口关闭失败")
 
 
 

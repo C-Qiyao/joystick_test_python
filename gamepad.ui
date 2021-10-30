@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>927</width>
-    <height>533</height>
+    <width>1350</width>
+    <height>548</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,6 +28,16 @@
       <widget class="QPushButton" name="pushButton">
        <property name="text">
         <string>连接手柄</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox_SerialSel"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_SerialCon">
+       <property name="text">
+        <string>连接串口</string>
        </property>
       </widget>
      </item>
@@ -80,13 +90,24 @@
      </rect>
     </property>
    </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>950</x>
+      <y>10</y>
+      <width>331</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout"/>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>927</width>
+     <width>1350</width>
      <height>22</height>
     </rect>
    </property>
