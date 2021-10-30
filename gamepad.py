@@ -5,10 +5,12 @@ import serial
 import serial.tools.list_ports
 import threading  # 导入threading包
 from io import BytesIO
+import pyqtgraph as pg
 from Ui_gamepad import Ui_MainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow,QPushButton, QPlainTextEdit,QLabel,QMessageBox
-
+pg.setConfigOption('background', 'w')
+pg.setConfigOption('foreground', 'k')
 class myclass():
     def __init__(self) -> None:
         pass
@@ -32,7 +34,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.disconnect.clicked.connect(self.discon)
         self.pushButton_stop.clicked.connect(self.stop)
         self.pushButton_start.clicked.connect(self.startread)
-
+        self.curThr = self.curPlt(self.widget_Cur_Thr, "t(s)", "throttle(%)", "油门", False)
 
         pygame.init()
         pygame.joystick.init()
@@ -41,14 +43,32 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.proData.setDaemon(True)#设置为后台线程，关闭一起关闭
         self.show()
         
-        
+        timer = QtCore.QTimer(self)
+        timer.timeout.connect(self.plotData)
+        timer.start(50)     
 
         self.message.insertPlainText('======CQY-手柄控制软件V1.0====\n') 
 
-
+        self.tic = time.time()#初始化起始时间
+        self.toc = time.time()
         self.xboxint=0
         self.serial.is_open=0
+        self.th=0.0# 小车当前油门开度(0 - 100%) 
+        self.t=0.0# 时间        
+        self.tData=[0]*100# 时间序列（用于画图）
+        self.xoData=[0]*100# 横坐标序列（用于画图）
+        self.yoData=[0]*100# 纵坐标序列（用于画图）
+        self.thData=[0]*100# 油门序列（用于画图）
 
+    def plotData(self):
+        self.toc=time.time()
+        self.t = self.toc - self.tic#相减得到运行时间
+        self.tData.pop(0)
+        self.tData.append(float(self.t))
+        self.thData.pop(0)
+        self.thData.append(float(self.th))
+
+        self.curThr.setData(self.tData, self.thData)        
     def connectgamepad(self):
 
         
@@ -88,6 +108,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                    self.done=True
                str1='x5: '+str(int(self.xbox.get_axis(5)*100))+' x4:  '+str(int(self.xbox.get_axis(4)*100))+'  x3:  '+str(int(self.xbox.get_axis(3)*100))+'  x2:  '+str(int(self.xbox.get_axis(2)*100))+'  x1:  '+str(int(self.xbox.get_axis(1)*100))
                print(str1)
+               self.th=int(self.xbox.get_axis(5)*100)
                if self.serial.is_open :
                     self.serial.write(bytes(str1+'\n',encoding='utf-8'))
             time.sleep(0.05)
@@ -159,6 +180,35 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 self.message.insertPlainText("串口关闭失败")
 
 
+    def curPlt(self,widget,xLabel,yLabel,title,isPre):
+        # 曲线图画布初始化
+
+        verticalLayout = QtWidgets.QVBoxLayout(widget)#Qt 垂直布局 (QVBoxLayout)
+        win = pg.GraphicsLayoutWidget(widget)#创建绘图窗口
+        win.setBackground((255, 255, 255))  # 背景色白色)
+        verticalLayout.addWidget(win)#在布局中增加控件：
+        if isPre:#是否显示横纵坐标
+            p = win.addPlot(title="<span style='font-size:12px;color:black'>" + title + "</span>")#在绘图窗口win中添加一个坐标
+            p.showGrid(x=True, y=True)#showGrid属性用于控制视图中数据项之间是否显示网格，如果该属性为True，则绘制网格；如果该属性为False，则不绘制网格
+        else:
+            p = win.addPlot(title="<span style='font-size:16px;color:black'>" + title + "</span>")
+            p.showGrid(x=True, y=True)
+            p.setLabel(axis="left", text="<span style='font-size:16px;color:black;font-family: Arial'>"+yLabel+"</span>")
+            p.setLabel(axis="bottom", text="<span style='font-size:16px;color:black;font-family: Arial'>"+xLabel+"</span>")
+        myPen = pg.mkPen({'color': (0, 134, 139), 'width': 2})
+        curve=p.plot(pen=myPen, name="y1")
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        axisPen = pg.mkPen({'color': (0, 0, 0), 'width': 1})
+        left_axis = p.getAxis("left")
+        left_axis.enableAutoSIPrefix(False)
+        left_axis.setStyle(tickFont=font)
+        left_axis.setPen(axisPen)
+        bot_axis = p.getAxis("bottom")
+        bot_axis.enableAutoSIPrefix(False)
+        bot_axis.setStyle(tickFont=font)
+        bot_axis.setPen(axisPen)
+        return curve
 
                             
            
