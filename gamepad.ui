@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>782</width>
-    <height>454</height>
+    <width>927</width>
+    <height>533</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>20</y>
+      <x>70</x>
+      <y>210</y>
       <width>171</width>
-      <height>231</height>
+      <height>241</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -32,13 +32,18 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="x_axis"/>
+      <widget class="QPushButton" name="pushButton_start">
+       <property name="text">
+        <string>开始读取</string>
+       </property>
+      </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="y_axis"/>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="z_axis"/>
+      <widget class="QPushButton" name="pushButton_stop">
+       <property name="text">
+        <string>停止读取</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="disconnect">
@@ -52,23 +57,26 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>54</width>
-      <height>12</height>
+      <x>70</x>
+      <y>70</y>
+      <width>311</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>X_axis</string>
+     <string>超平机器人手柄连接软件</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::AutoText</enum>
     </property>
    </widget>
    <widget class="QTextEdit" name="message">
     <property name="geometry">
      <rect>
-      <x>280</x>
+      <x>410</x>
       <y>10</y>
-      <width>491</width>
-      <height>391</height>
+      <width>501</width>
+      <height>491</height>
      </rect>
     </property>
    </widget>
@@ -78,7 +86,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>782</width>
+     <width>927</width>
      <height>22</height>
     </rect>
    </property>
