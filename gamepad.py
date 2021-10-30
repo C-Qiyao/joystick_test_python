@@ -18,10 +18,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def __init__(self):
         super(MainWindow,self).__init__()
         self.setupUi(self)
-
+        self.message.insertPlainText('===CQY-手柄控制软件V1.0=\n') 
         self.port_list = list(serial.tools.list_ports.comports())# 获取当前可用串口列表，serial模块函数
         if len(self.port_list) == 0:# 判断串口列表是否为空
-            self.message.insertPlainText("未找到可用串口")# 弹出错误警告框，自建函数
+            self.message.insertPlainText("未找到可用串口\n")# 弹出错误警告框，自建函数
         else:
             for i in range(0,len(self.port_list)):# 遍历可用串口列表
                 self.comboBox_SerialSel.addItem(self.port_list[i][0])# 将可用串口添加至comboBox（复选框）控件
@@ -34,7 +34,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.disconnect.clicked.connect(self.discon)
         self.pushButton_stop.clicked.connect(self.stop)
         self.pushButton_start.clicked.connect(self.startread)
-        self.curThr = self.curPlt(self.widget_Cur_Thr, "t(s)", "throttle(%)", "油门", False)
+        self.curThr = self.curPlt(self.widget_Cur_Thr, "t(s)", "throttle(%)", "油门", False,1)
+        self.curBrk = self.curPlt(self.widget_Cur_Brk, "t(s)", "break(%)", "刹车", False,1)
+        self.curx1y1 = self.curPlt(self.widget_Cur_x1y1, "x1", "y1", "摇杆1", False,2)
+        self.curx2y2 = self.curPlt(self.widget_Cur_x2y2, "x2", "y2", "摇杆2", False,2)
 
         pygame.init()
         pygame.joystick.init()
@@ -47,18 +50,26 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         timer.timeout.connect(self.plotData)
         timer.start(50)     
 
-        self.message.insertPlainText('======CQY-手柄控制软件V1.0====\n') 
+        
 
         self.tic = time.time()#初始化起始时间
         self.toc = time.time()
         self.xboxint=0
         self.serial.is_open=0
         self.th=0.0# 小车当前油门开度(0 - 100%) 
-        self.t=0.0# 时间        
+        self.t=0.0# 时间 
+        self.br=0.0# 刹车    
+        self.x1=0.0
+        self.y1=0.0
+        self.x2=0.0
+        self.y2=0.0
         self.tData=[0]*100# 时间序列（用于画图）
-        self.xoData=[0]*100# 横坐标序列（用于画图）
-        self.yoData=[0]*100# 纵坐标序列（用于画图）
+        self.x1Data=[0]*100# 横坐标序列（用于画图）
+        self.y1Data=[0]*100# 纵坐标序列（用于画图）
+        self.x2Data=[0]*100# 横坐标序列（用于画图）
+        self.y2Data=[0]*100# 纵坐标序列（用于画图）
         self.thData=[0]*100# 油门序列（用于画图）
+        self.brData=[0]*100# 刹车序列（用于画图）
 
     def plotData(self):
         self.toc=time.time()
@@ -67,8 +78,20 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.tData.append(float(self.t))
         self.thData.pop(0)
         self.thData.append(float(self.th))
-
-        self.curThr.setData(self.tData, self.thData)        
+        self.brData.pop(0)
+        self.brData.append(float(self.br))
+        self.x1Data.pop(0)
+        self.x1Data.append(float(self.x1))
+        self.y1Data.pop(0)
+        self.y1Data.append(float(self.y1))
+        self.x2Data.pop(0)
+        self.x2Data.append(float(self.x2))
+        self.y2Data.pop(0)
+        self.y2Data.append(float(self.y2))
+        self.curThr.setData(self.tData, self.thData)
+        self.curBrk.setData(self.tData, self.brData)     
+        self.curx1y1.setData(self.x1Data, self.y1Data)    
+        self.curx2y2.setData(self.x2Data, self.y2Data) 
     def connectgamepad(self):
 
         
@@ -106,9 +129,14 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                for event in pygame.event.get(): # User did something
                   if event.type == pygame.QUIT: # If user clicked close
                    self.done=True
-               str1='x5: '+str(int(self.xbox.get_axis(5)*100))+' x4:  '+str(int(self.xbox.get_axis(4)*100))+'  x3:  '+str(int(self.xbox.get_axis(3)*100))+'  x2:  '+str(int(self.xbox.get_axis(2)*100))+'  x1:  '+str(int(self.xbox.get_axis(1)*100))
+               str1='th: '+str(int(self.xbox.get_axis(5)*100))+' br:  '+str(int(self.xbox.get_axis(4)*100))+'  x1:  '+str(int(self.xbox.get_axis(3)*100))+'  y1:  '+str(int(self.xbox.get_axis(2)*100))+'  x2:  '+str(int(self.xbox.get_axis(1)*100))+'  y2:  '+str(int(self.xbox.get_axis(0)*100))
                print(str1)
-               self.th=int(self.xbox.get_axis(5)*100)
+               self.th=int(self.xbox.get_axis(5)*100)+100
+               self.br=int(self.xbox.get_axis(4)*100)+100
+               self.x1=int(self.xbox.get_axis(0)*100)
+               self.y1=-int(self.xbox.get_axis(1)*100)
+               self.x2=int(self.xbox.get_axis(2)*100)
+               self.y2=-int(self.xbox.get_axis(3)*100)               
                if self.serial.is_open :
                     self.serial.write(bytes(str1+'\n',encoding='utf-8'))
             time.sleep(0.05)
@@ -180,7 +208,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 self.message.insertPlainText("串口关闭失败")
 
 
-    def curPlt(self,widget,xLabel,yLabel,title,isPre):
+    def curPlt(self,widget,xLabel,yLabel,title,isPre,mode):
         # 曲线图画布初始化
 
         verticalLayout = QtWidgets.QVBoxLayout(widget)#Qt 垂直布局 (QVBoxLayout)
@@ -195,6 +223,11 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             p.showGrid(x=True, y=True)
             p.setLabel(axis="left", text="<span style='font-size:16px;color:black;font-family: Arial'>"+yLabel+"</span>")
             p.setLabel(axis="bottom", text="<span style='font-size:16px;color:black;font-family: Arial'>"+xLabel+"</span>")
+        if mode==1:
+            p.setYRange(0, 200)
+        if mode==2:
+            p.setYRange(-100,100)
+            p.setXRange(-100,100)
         myPen = pg.mkPen({'color': (0, 134, 139), 'width': 2})
         curve=p.plot(pen=myPen, name="y1")
         font = QtGui.QFont()
