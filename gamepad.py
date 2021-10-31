@@ -1,3 +1,7 @@
+from pyqtgraph.graphicsItems.DateAxisItem import makeMStepper
+
+
+'''master channel'''
 import sys
 import pygame
 import time
