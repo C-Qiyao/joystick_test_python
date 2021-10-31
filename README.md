@@ -3,7 +3,7 @@
 #### 介绍
 基于pyQt5开发的手柄接收界面,目前针对Xbox one以及Xbox series系列手柄的摇杆功能开发
 可用于手柄的摇杆测试以及手柄转串口发送的二次开发
-
+![Image text](https://gitee.com/C-Qiyao/python_joystick/blob/master/running.png)
 #### 软件架构
 软件架构说明
 1.  主体代码由python3完成编写
