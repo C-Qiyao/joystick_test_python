@@ -1,35 +1,31 @@
 # python_joystick
 
 #### 介绍
-基于python开发的手柄接受界面
+基于pyQt5开发的手柄接收界面,目前针对Xbox one以及Xbox series系列手柄的摇杆功能开发
+可用于手柄的摇杆测试以及手柄转串口发送的二次开发
 
 #### 软件架构
 软件架构说明
-
-
-#### 安装教程
-
-1.  有空再写
+1.  主体代码由python3完成编写
+2.  Gui界面由qt生成
+3.  绘图窗口由pyqtgraph创建
+4.  手柄数据读取由pygame joystick完成
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
+1.  连接上你的xbox手柄，打开gamepad.exe可执行文件
+2.  正常情况下gui界面右侧绘图窗口开始运行
+3.  选择连接手柄，出现当前手柄信息
+4.  点击开始读取，随即按下手柄RT/LT键（扳机键）
+5.  等待程序响应，若无曲线绘图则再次点击开始读取按钮
+6.  附带串口发送按钮，可以选择串口号，将摇杆数据发送至串口以控制其他外围设备
+7.  当前默认串口波特率为38400bps，手柄采样200级，约0.2s一次手柄摇杆采集，使用串口需注意模块的处理速度
 #### 参与贡献
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+1.  提交代码 陈祺遥
 
+#### 其余说明
 
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+1.  使用问题可联系开发者:
+    QQ 1113938836 
+    Email 1113938836@qq.com
