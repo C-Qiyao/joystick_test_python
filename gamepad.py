@@ -1,3 +1,4 @@
+'''dev_test,未发布测试版本通道'''
 import sys
 import pygame
 import time
