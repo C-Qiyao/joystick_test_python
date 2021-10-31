@@ -34,6 +34,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.disconnect.clicked.connect(self.discon)
         self.pushButton_stop.clicked.connect(self.stop)
         self.pushButton_start.clicked.connect(self.startread)
+        self.pushButton_quit.clicked.connect(self.quitprogram)
         self.curThr = self.curPlt(self.widget_Cur_Thr, "t(s)", "throttle(%)", "油门", False,1)
         self.curBrk = self.curPlt(self.widget_Cur_Brk, "t(s)", "break(%)", "刹车", False,1)
         self.curx1y1 = self.curPlt(self.widget_Cur_x1y1, "x1", "y1", "摇杆1", False,2)
@@ -242,7 +243,17 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         bot_axis.setStyle(tickFont=font)
         bot_axis.setPen(axisPen)
         return curve
-
+    
+    def quitprogram(self):
+        try:
+            self.serial.flushInput()# 清除串口缓存
+            self.serial.close()# 关闭串口
+            self.quit=1
+            self.xbox.quit()
+            sys.exit()
+        except Exception as err:
+            sys.exit()
+        
                             
            
     def echo(self,info):
