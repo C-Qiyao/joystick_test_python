@@ -27,5 +27,5 @@
 #### 其余说明
 
 1.  使用问题可联系开发者:
-    QQ 1113938836 
-    Email 1113938836@qq.com
+2.  QQ 1113938836 
+3.  Email chenqy21@mails.jlu.edu.cn
