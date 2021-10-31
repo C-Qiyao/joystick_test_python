@@ -19,8 +19,8 @@
      <rect>
       <x>50</x>
       <y>500</y>
-      <width>391</width>
-      <height>271</height>
+      <width>401</width>
+      <height>501</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -59,6 +59,13 @@
       <widget class="QPushButton" name="disconnect">
        <property name="text">
         <string>断开连接</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_quit">
+       <property name="text">
+        <string>退出程序</string>
        </property>
       </widget>
      </item>
